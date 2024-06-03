@@ -8,18 +8,20 @@ interface Props {
     alternative?: boolean;
     sx?: object;
     hoverColor?: string;
+    disabled?: boolean;
 }
-const ContainedButton = ( {onClick, label, alternative, icon, sx, hoverColor} : Props) => {
+const ContainedButton = ( {onClick, label, alternative, icon, sx, hoverColor, disabled=false} : Props) => {
     return (
         <Button
             variant="contained"
+            disabled={disabled}
             sx={{
                 fontSize:"20px",
                 marginRight: "10px",
-                backgroundColor: alternative ? 'white' : '#ff6600',
-                color: alternative ? '#ff6600' : 'white',
+                backgroundColor: alternative ? 'white' : '#2d2d2d',
+                color: alternative ? '#2d2d2d' : 'white',
                 '&:hover': {
-                    backgroundColor: hoverColor ? hoverColor : '#e65c00'
+                    backgroundColor: hoverColor ? hoverColor : '#414141'
                 },
                 ...sx
             }}

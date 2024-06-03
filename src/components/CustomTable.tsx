@@ -13,14 +13,14 @@ export const TableBaseStyle = styled(DataGrid)(() => ({
         outline: 'none'
     },
     '& .MuiDataGrid-row:hover': {
-        backgroundColor: '#fff2e9',
+        backgroundColor: 'WhiteSmoke',
     },
     '& .MuiDataGrid-row.Mui-selected': {
-        backgroundColor: '#ffeee2',
+        backgroundColor: 'lightgray',
         borderColor: 'black'
     },
     '& .MuiDataGrid-row.Mui-selected:hover': {
-        backgroundColor: '#ffe0cc',
+        backgroundColor: 'lightgray',
     }
 }));
 

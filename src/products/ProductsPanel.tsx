@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
-import CustomTable from "../components/CustomTable";
-import { GridColDef} from "@mui/x-data-grid";
-import {Grid} from "@mui/material";
 import ContainedButton from "../components/ContainedButton";
-import AddOrderModal from "./AddOrderModal";
+import {Grid} from "@mui/material";
+import CustomTable from "../components/CustomTable";
+import AddOrderModal from "../orders/AddOrderModal";
+import {GridColDef} from "@mui/x-data-grid";
+import AddProductModa from "./AddProductModal";
+import AddProductModal from "./AddProductModal";
 
-const OrderPanel = () => {
-
+const ProductsPanel = () => {
     const [openModal, setOpenModal] = useState(false);
-
     const columns : GridColDef[] = [
         {field: 'wmsId', headerName: "Zlecenie", flex: 2, headerClassName: 'header-cell'},
         {field: 'palletPosition', headerName: "Na palecie", flex: 2, headerClassName: 'header-cell'},
@@ -46,23 +46,17 @@ const OrderPanel = () => {
     ]
     return (
         <Grid container >
-            <ContainedButton label="Stwórz zlecenie" onClick={()=>{setOpenModal(true)}}></ContainedButton>
+            <ContainedButton label="Stwórz produkt" onClick={()=>{setOpenModal(true)}}></ContainedButton>
             <Grid container>
-                <Grid item xs={6} sx={{padding: "5px", height: "70vh", fontSize:"25px"}}>
-                    Zlecenia:
-                    <CustomTable rows={data} columns={columns}/>
-
-                </Grid>
-                <Grid item xs={6} sx={{padding: "5px", height: "70vh", fontSize:"25px"}}>
-                    Linie:
+                <Grid item xs={12} sx={{padding: "5px", height: "70vh", fontSize:"25px"}}>
+                    Produkty:
                     <CustomTable rows={data} columns={columns}/>
 
                 </Grid>
             </Grid>
-            <AddOrderModal show={openModal} handleClose={()=>{setOpenModal(!openModal)}}/>
+            <AddProductModal show={openModal} handleClose={()=>{setOpenModal(!openModal)}}/>
         </Grid>
-
     );
 };
 
-export default OrderPanel;
+export default ProductsPanel;

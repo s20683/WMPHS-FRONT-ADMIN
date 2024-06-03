@@ -10,5 +10,9 @@ export const navLinkData = [
     {
         pageName: "Stock",
         url: "stock",
+    },
+    {
+        pageName: "Produkty",
+        url: "products",
     }
 ];

@@ -5,9 +5,10 @@ import theme from "./styles/theme";
 import MainLayout from "./layouts/MainLayout";
 import {Box} from "@mui/material";
 import OrdersPanel from "./orders/OrdersPanel";
+import ProductsPanel from "./products/ProductsPanel";
 
 function App() {
-    const pagePadding = 10;
+    const pagePadding = 5;
     const pageMargin = 0;
   return (
     <>
@@ -34,6 +35,13 @@ function App() {
                           <Route path="/stock" element={
                               <Box paddingTop={pagePadding} mt={pageMargin} paddingLeft={5} paddingRight={5}>
                                   {/*<OrdersPanel/>*/}
+                              </Box>
+                          } />
+                      </Route>
+                      <Route>
+                          <Route path="/products" element={
+                              <Box paddingTop={pagePadding} mt={pageMargin} paddingLeft={5} paddingRight={5}>
+                                  <ProductsPanel/>
                               </Box>
                           } />
                       </Route>
