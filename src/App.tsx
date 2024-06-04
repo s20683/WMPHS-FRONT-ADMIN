@@ -6,6 +6,7 @@ import MainLayout from "./layouts/MainLayout";
 import {Box} from "@mui/material";
 import OrdersPanel from "./orders/OrdersPanel";
 import ProductsPanel from "./products/ProductsPanel";
+import StocksPanel from "./stocks/StocksPanel";
 
 function App() {
     const pagePadding = 5;
@@ -33,14 +34,14 @@ function App() {
                       </Route>
                       <Route>
                           <Route path="/stock" element={
-                              <Box paddingTop={pagePadding} mt={pageMargin} paddingLeft={5} paddingRight={5}>
-                                  {/*<OrdersPanel/>*/}
+                              <Box paddingTop={3} mt={pageMargin} paddingLeft={5} paddingRight={5}>
+                                  <StocksPanel/>
                               </Box>
                           } />
                       </Route>
                       <Route>
                           <Route path="/products" element={
-                              <Box paddingTop={pagePadding} mt={pageMargin} paddingLeft={5} paddingRight={5}>
+                              <Box paddingTop={3} mt={pageMargin} paddingLeft={5} paddingRight={5}>
                                   <ProductsPanel/>
                               </Box>
                           } />
@@ -49,7 +50,6 @@ function App() {
                   </Route>
               </Routes>
           </ThemeProvider>
-
       </HashRouter>
     </>
   );

@@ -7,6 +7,7 @@ import axios from "axios";
 interface Props {
     show: boolean;
     handleClose: () => void;
+    reloadData: () => void;
 }
 const style = {
     position: 'absolute' as 'absolute',
@@ -21,7 +22,7 @@ const style = {
     px: 4,
     pb: 3,
 };
-const AddProductModal = ({show, handleClose} : Props) => {
+const AddProductModal = ({show, handleClose, reloadData} : Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [msg, setMsg] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
@@ -73,6 +74,7 @@ const AddProductModal = ({show, handleClose} : Props) => {
                 } else {
                     setSuccess(true);
                     setMsg('Product został dodany!');
+                    reloadData();
                 }
             })
     }

@@ -1,60 +1,101 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ContainedButton from "../components/ContainedButton";
 import {Grid} from "@mui/material";
 import CustomTable from "../components/CustomTable";
-import AddOrderModal from "../orders/AddOrderModal";
-import {GridColDef} from "@mui/x-data-grid";
-import AddProductModa from "./AddProductModal";
+import {GridCellParams, GridColDef} from "@mui/x-data-grid";
 import AddProductModal from "./AddProductModal";
+import axios from "axios";
+import Swal from "sweetalert2";
 
+export interface Product {
+    id: number;
+    name: string;
+    location: string;
+    volume: number;
+    empty: boolean;
+}
 const ProductsPanel = () => {
+    const [products, setProducts] = useState<Product[]>([])
     const [openModal, setOpenModal] = useState(false);
+    const [result, setResult] = useState<string>("")
+
+    function loadProducts(){
+        axios.get("/gui2wmphs/getProducts")
+            .then(response =>{
+                console.log(response)
+                if (response?.data)
+                    setProducts(response.data)
+            })
+            .catch(error => console.error('Error fetching products:', error));
+    }
+
+    useEffect(() => {
+        loadProducts()
+        const intervalId = setInterval(loadProducts, 2000);
+        return () => clearInterval(intervalId);
+    }, []);
+
+
     const columns : GridColDef[] = [
-        {field: 'wmsId', headerName: "Zlecenie", flex: 2, headerClassName: 'header-cell'},
-        {field: 'palletPosition', headerName: "Na palecie", flex: 2, headerClassName: 'header-cell'},
-        {field: 'barcode', headerName: "Kod Pojemnika", flex: 4, headerClassName: 'header-cell',},
-        {field: 'state', headerName: "Status", flex: 3, headerClassName: 'header-cell'},
-        {field: 'priority', headerName: "Priorytet", flex: 3, headerClassName: 'header-cell'},
-        {field: 'buffer', headerName: "Bufor", flex: 1, headerClassName: 'header-cell'},
-        {field: 'lastLocation', headerName: "Ostatnia Lokacja", flex: 3, headerClassName: 'header-cell'},
-        {field: 'timestamp', headerName: "Czas Skanu", flex: 4, headerClassName: 'header-cell'}
+        {field: 'id', headerName: "Id", flex: 2, headerClassName: 'header-cell'},
+        {field: 'name', headerName: "Nazwa", flex: 4, headerClassName: 'header-cell'},
+        {field: 'location', headerName: "Lokacja", flex: 4, headerClassName: 'header-cell',},
+        {field: 'volume', headerName: "Objętość", flex: 3, headerClassName: 'header-cell'},
+        {field: 'empty', headerName: "Usuń", flex: 3, headerClassName: 'header-cell',
+            renderCell: (params: GridCellParams) => {
+                const id = params.row.id as number;
+                const name = params.row.name as string;
+                return (
+                    <ContainedButton sx={{fontSize: "15px"}} label="Usuń"
+                                     onClick={() => {
+                                         deleteProduct(id, name)
+                                     }}
+                    />
+                )
+            }
+        }
     ];
+    function deleteProduct(id :number, name: string) {
+        Swal.fire({
+            title: 'Potwierdzenie',
+            text: 'Czy na pewno chcesz usunąć produkt ' + name + '? Element nie zostanie usunięty jeśli istnieją z nim powiązania.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Tak',
+            cancelButtonText: 'Nie',
+        }).then(() => {
 
-    const data = [
-        {id: 1,wmsId: '92921921', palletPosition: 2, barcode: "D1-10000000001", state: "Spaletyzowany", priority:1 , buffer: "43", lastLocation: "R2-1-PAL",
-            timestamp:"2024-04-24 14:27:21", progress: 55},
-        {id: 2,wmsId: '92921922', palletPosition: 1, barcode: "D1-10000000002", state: "W kompletacji", priority:1 , buffer: "43", lastLocation: "BA_OUT",
-            timestamp:"2024-04-24 14:27:21", progress: 77},
-        {id: 3,wmsId: '92921923', palletPosition: 1, barcode: "D1-10000000003", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "checking_in",
-            timestamp:"2024-04-24 14:27:21", progress: 100},
-        {id: 4,wmsId: '92921924', palletPosition: 1, barcode: "D1-10000000013", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "checking_in",
-            timestamp:"2024-04-24 14:27:21", progress: 100},
-        {id: 5,wmsId: '92921925', palletPosition: 1, barcode: "D1-10000000023", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "checking_in",
-            timestamp:"2024-04-24 14:27:21", progress: 100},
-        {id: 6,wmsId: '92921926', palletPosition: 1, barcode: "D1-10000000033", state: "Kontrola jakości", priority:2 , buffer: "", lastLocation: "checking_in",
-            timestamp:"2024-04-24 14:27:21", progress: 100},
-        {id: 7,wmsId: '92921927', palletPosition: 1, barcode: "D1-10000000043", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "checking_in",
-            timestamp:"2024-04-24 14:27:21", progress: 100},
-        {id: 8,wmsId: '92921928', palletPosition: 1, barcode: "D1-10000000053", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "",
-            timestamp:"2024-04-24 14:27:21", progress: 0},
-        {id: 9,wmsId: '92921929', palletPosition: 1, barcode: "D1-10000000063", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "",
-            timestamp:"2024-04-24 14:27:21", progress: 0},
-        {id: 10,wmsId: '92921930', palletPosition: 1, barcode: "D1-10000000073", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "",
-            timestamp:"2024-04-24 14:27:21", progress: 0},
-        {id: 11,wmsId: '92921931', palletPosition: 1, barcode: "D1-10000000083", state: "Kontrola jakości", priority:1122121 , buffer: "", lastLocation: "",
-            timestamp:"2024-04-24 14:27:21", progress: 0}
-    ]
+            axios.delete(`/gui2wmphs/deleteProduct/${id}`)
+                .then((response)=>{
+                    console.log(response)
+                    if (response?.data.success) {
+                        setResult("Produkt został usunięty!")
+                        loadProducts()
+                    } else {
+                        setResult("Błąd podczas usuwania, sprawdź czy nie istnieją obiekty powiązane z tym produktem.")
+                    }
+                }).catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+    }
+
     return (
-        <Grid container >
-            <ContainedButton label="Stwórz produkt" onClick={()=>{setOpenModal(true)}}></ContainedButton>
-            <Grid container>
-                <Grid item xs={12} sx={{padding: "5px", height: "70vh", fontSize:"25px"}}>
-                    Produkty:
-                    <CustomTable rows={data} columns={columns}/>
+        <Grid container justifyContent="center" alignItems="center">
+            <Grid container sx={{width: "65%", backgroundColor:"#E8E8E8", padding: "30px", borderRadius: 5}}>
+                <ContainedButton label="Stwórz produkt" onClick={()=>{setOpenModal(true)}}></ContainedButton>
+                <Grid container>
+                    <Grid item xs={12} sx={{padding: "5px", height: "70vh", fontSize:"25px"}}>
+                        <Grid container>
+                            Produkty:   {result}
+                        </Grid>
+                        <CustomTable rows={products} columns={columns}/>
 
+                    </Grid>
                 </Grid>
+                <AddProductModal reloadData={loadProducts} show={openModal} handleClose={()=>{setOpenModal(!openModal)}}/>
             </Grid>
-            <AddProductModal show={openModal} handleClose={()=>{setOpenModal(!openModal)}}/>
+
         </Grid>
     );
 };
