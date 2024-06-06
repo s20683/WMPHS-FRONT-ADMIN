@@ -1,6 +1,7 @@
 {
   "name": "wmphs-front",
   "version": "0.1.0",
+  "homepage": "/admin",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^3.0.0",
