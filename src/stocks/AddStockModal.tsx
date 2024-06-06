@@ -75,7 +75,7 @@ const AddStockModal = ({show, handleClose, reloadData} : Props) => {
             return;
         }
         const value = parseInt(e.target.value, 10);
-        if (value <= 50000) {
+        if (value <= 50000 && value >= 0) {
             setQuantity(value);
         }
     };
@@ -88,7 +88,8 @@ const AddStockModal = ({show, handleClose, reloadData} : Props) => {
                 productId: productId,
                 expDate: expDate,
                 productName: productName,
-                quantity: quantity
+                quantity: quantity,
+                allocatedQuantity: 0
             })
             .then(response =>{
                 setIsLoading(false)
@@ -103,6 +104,11 @@ const AddStockModal = ({show, handleClose, reloadData} : Props) => {
                     reloadData();
                 }
             })
+    }
+    function validate():boolean {
+        if (productName.length > 0 && expDate.length>0 && quantity !== 0 && productId !== 0)
+            return true
+        return false;
     }
     return (
         <Modal
@@ -120,7 +126,7 @@ const AddStockModal = ({show, handleClose, reloadData} : Props) => {
                             id="demo-simple-select"
                             value={productId}
                             sx={{ width: "100%" }}
-                            label="Product"
+                            label="Produkt"
                             onChange={(event) => {
                                 const selectedId = Number(event.target.value);
                                 const selectedProduct = products.find(product => product.id === selectedId);
@@ -175,7 +181,7 @@ const AddStockModal = ({show, handleClose, reloadData} : Props) => {
                     <Grid item sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, width: '100%' }}>
                         <ContainedButton sx={{fontSize:"15px",marginRight:"0px", marginTop: "10px", width:"46%"}} label="Zamknij" onClick={onClose}/>
                         <ContainedButton
-                            disabled={isLoading}
+                            disabled={isLoading || !validate()}
                             sx={{fontSize:"15px",marginRight:"0px", marginTop: "10px", width:"46%"}}
                             label="Stwórz"
                             onClick={sendAddStock}

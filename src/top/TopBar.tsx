@@ -25,6 +25,7 @@ const TopBar = () => {
                             hoverColor="rgb(255, 153, 0)"
                             sx={{
                                 width: "100%",
+                                fontSize: "14px",
                                 backgroundColor: isActive ? 'white' : '#2d2d2d',
                                 color: isActive ? '#2d2d2d' : 'white',
                                 border: "2px solid #616161",
@@ -42,7 +43,7 @@ const TopBar = () => {
     return (
         <Toolbar variant="dense" sx={{ background: "#2d2d2d"}}>
             <IconButton size="small" edge="start" color="primary" aria-label="logo" sx={{ marginRight: 3 }} href="/">
-                <img src={logoWhite} width={220} />
+                <img src={logoWhite} width={180} />
             </IconButton>
             <Stack direction="row" flexGrow={1}>
                 {navLinks}

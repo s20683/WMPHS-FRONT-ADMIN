@@ -14,5 +14,13 @@ export const navLinkData = [
     {
         pageName: "Produkty",
         url: "products",
+    },
+    {
+        pageName: "Destynacje",
+        url: "destinations",
+    },
+    {
+        pageName: "Uzytkownicy",
+        url: "users",
     }
 ];

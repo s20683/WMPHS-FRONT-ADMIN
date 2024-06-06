@@ -1,36 +1,21 @@
 import React, {useState} from 'react';
 import {Box, Grid, Modal, TextField} from "@mui/material";
+import {style} from "../products/AddProductModal";
 import ContainedButton from "../components/ContainedButton";
 import axios from "axios";
-
 
 interface Props {
     show: boolean;
     handleClose: () => void;
     reloadData: () => void;
 }
-export const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    pt: 2,
-    px: 4,
-    pb: 3,
-};
-const AddProductModal = ({show, handleClose, reloadData} : Props) => {
+const AddUserModal = ({show, handleClose, reloadData} : Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [msg, setMsg] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
 
 
-    const [volume, setVolume] = useState<number>(0);
     const [name, setName] = useState<string>('');
-    const [location, setLocation] = useState<string>('');
     const [id, setId] = useState<number>(-1);
 
     function onClose(){
@@ -39,30 +24,16 @@ const AddProductModal = ({show, handleClose, reloadData} : Props) => {
         setMsg('')
     }
     function clearForm(){
-        setVolume(0)
         setName('')
-        setLocation('')
         setId(-1)
     }
-    const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === '') {
-            setVolume(0);
-            return;
-        }
-        const value = parseInt(e.target.value, 10);
-        if (value <= 50000 && value >= 0) {
-            setVolume(value);
-        }
-    };
 
-    function sendAddProduct() {
+    function sendAddDestination() {
         setIsLoading(true)
-        axios.post('/gui2wmphs/addProduct',
+        axios.post('/gui2wmphs/addUser',
             {
                 id: id,
                 name: name,
-                location: location,
-                volume: volume
             })
             .then(response =>{
                 setIsLoading(false)
@@ -73,13 +44,13 @@ const AddProductModal = ({show, handleClose, reloadData} : Props) => {
                     setMsg(response?.data.errorMessage);
                 } else {
                     setSuccess(true);
-                    setMsg('Product został dodany!');
+                    setMsg('Użytkownik został dodany!');
                     reloadData();
                 }
             })
     }
     function validate():boolean {
-        if (name.length > 0 && location.length>0 && volume !== 0)
+        if (name.length > 0)
             return true
         return false;
     }
@@ -91,7 +62,7 @@ const AddProductModal = ({show, handleClose, reloadData} : Props) => {
             <Box sx={{ ...style, width: 280 }}>
                 <Grid direction="column">
                     <Grid item sx={{fontSize: "25px"}}>
-                        Dodaj produkt
+                        Dodaj Destynację
                     </Grid>
                     <Grid item sx={{ marginTop: "15px"}}>
                         <TextField
@@ -102,31 +73,8 @@ const AddProductModal = ({show, handleClose, reloadData} : Props) => {
                             inputProps={{ minLength:3, maxLength: 15 }}
                         />
                     </Grid>
-                    <Grid item sx={{ marginTop: "15px"}}>
-                        <TextField
-                            label="Lokacja"
-                            value={location}
-                            sx={{width: "100%"}}
-                            onChange={(event)=>{setLocation(event.target.value as string)}}
-                            inputProps={{ minLength:3, maxLength: 10 }}
-                        />
-                    </Grid>
-                    <Grid item sx={{ marginTop: "15px"}}>
-                        <TextField
-                            id="outlined-number"
-                            sx={{width: "100%"}}
-                            label="Objętość (ml.)"
-                            type="number"
-                            value={volume}
-                            onChange={handleVolumeChange}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            inputProps={{ max: 50000 }}
-                        />
-                    </Grid>
                     <Grid item sx={{color: success ? "green" : "red"}}>
-                         {(msg && msg.length > 0) && msg}
+                        {(msg && msg.length > 0) && msg}
                     </Grid>
                     <Grid item sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, width: '100%' }}>
                         <ContainedButton sx={{fontSize:"15px",marginRight:"0px", marginTop: "10px", width:"46%"}} label="Zamknij" onClick={onClose}/>
@@ -134,7 +82,7 @@ const AddProductModal = ({show, handleClose, reloadData} : Props) => {
                             disabled={isLoading || !validate()}
                             sx={{fontSize:"15px",marginRight:"0px", marginTop: "10px", width:"46%"}}
                             label="Stwórz"
-                            onClick={sendAddProduct}
+                            onClick={sendAddDestination}
                         />
                     </Grid>
                 </Grid>
@@ -143,4 +91,4 @@ const AddProductModal = ({show, handleClose, reloadData} : Props) => {
     );
 };
 
-export default AddProductModal;
+export default AddUserModal;

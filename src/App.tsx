@@ -7,6 +7,8 @@ import {Box} from "@mui/material";
 import OrdersPanel from "./orders/OrdersPanel";
 import ProductsPanel from "./products/ProductsPanel";
 import StocksPanel from "./stocks/StocksPanel";
+import DestinationsPanel from "./destinations/DestinationsPanel";
+import UsersPanel from "./users/UsersPanel";
 
 function App() {
     const pagePadding = 5;
@@ -27,7 +29,7 @@ function App() {
                       } />
                       <Route>
                           <Route path="/orders" element={
-                              <Box paddingTop={pagePadding} mt={pageMargin} paddingLeft={5} paddingRight={5}>
+                              <Box paddingTop={2} mt={pageMargin} paddingLeft={5} paddingRight={5}>
                                   <OrdersPanel/>
                               </Box>
                           } />
@@ -43,6 +45,20 @@ function App() {
                           <Route path="/products" element={
                               <Box paddingTop={3} mt={pageMargin} paddingLeft={5} paddingRight={5}>
                                   <ProductsPanel/>
+                              </Box>
+                          } />
+                      </Route>
+                      <Route>
+                          <Route path="/destinations" element={
+                              <Box paddingTop={3} mt={pageMargin} paddingLeft={5} paddingRight={5}>
+                                  <DestinationsPanel/>
+                              </Box>
+                          } />
+                      </Route>
+                      <Route>
+                          <Route path="/users" element={
+                              <Box paddingTop={3} mt={pageMargin} paddingLeft={5} paddingRight={5}>
+                                  <UsersPanel/>
                               </Box>
                           } />
                       </Route>

@@ -11,14 +11,27 @@ import Swal from "sweetalert2";
 interface Stock {
     id: number;
     quantity: number;
+    allocatedQuantity: number;
+    notAllocatedQuantity: number;
     productId: number;
     expDate: string;
     productName: string;
     empty: boolean;
 }
+export interface CompressedStock {
+    id: number;
+    quantity: number;
+    allocatedQuantity: number;
+    notAllocatedQuantity: number;
+    productId: number;
+    productName: string;
+    productVolume: number;
+    empty: boolean;
+}
 const StocksPanel = () => {
     const [openModal, setOpenModal] = useState(false);
     const [stocks, setStocks] = useState<Stock[]>([])
+    const [compressedStocks, setCompressedStocks] = useState<Stock[]>([])
     const [result, setResult] = useState<string>("")
     function loadStocks(){
         axios.get("/gui2wmphs/getStocks")
@@ -29,10 +42,23 @@ const StocksPanel = () => {
             })
             .catch(error => console.error('Error fetching stocks:', error));
     }
+    function loadSCompressedStocks(){
+        axios.get("/gui2wmphs/getCompressedStocks")
+            .then(response =>{
+                console.log(response)
+                if (response?.data)
+                    setCompressedStocks(response.data)
+            })
+            .catch(error => console.error('Error fetching compressedStocks:', error));
+    }
+    function reloadData(){
+        loadStocks()
+        loadSCompressedStocks()
+    }
 
     useEffect(() => {
-        loadStocks()
-        const intervalId = setInterval(loadStocks, 2000);
+        reloadData()
+        const intervalId = setInterval(reloadData, 2000);
         return () => clearInterval(intervalId);
     }, []);
 
@@ -40,6 +66,8 @@ const StocksPanel = () => {
         {field: 'id', headerName: "Id", flex: 2, headerClassName: 'header-cell'},
         {field: 'productName', headerName: "Produkt", flex: 4, headerClassName: 'header-cell',},
         {field: 'quantity', headerName: "Ilość", flex: 2, headerClassName: 'header-cell'},
+        {field: 'allocatedQuantity', headerName: "Zaalokowana ilość", flex: 3, headerClassName: 'header-cell'},
+        {field: 'notAllocatedQuantity', headerName: "Niezaalokowana ilość", flex: 3, headerClassName: 'header-cell'},
         {field: 'expDate', headerName: "Data ważności", flex: 4, headerClassName: 'header-cell'},
         {field: 'empty', headerName: "Usuń", flex: 3, headerClassName: 'header-cell',
             renderCell: (params: GridCellParams) => {
@@ -54,6 +82,33 @@ const StocksPanel = () => {
             )
             }
         }
+    ];
+    const columnsCompressedStocks : GridColDef[] = [
+        {field: 'id', headerName: "Id", flex: 2, headerClassName: 'header-cell'},
+        {field: 'productName', headerName: "Produkt", flex: 4, headerClassName: 'header-cell',},
+        {
+            field: 'quantity',
+            headerName: "Ilość",
+            flex: 2,
+            headerClassName: 'header-cell',
+            renderCell: (params) => {
+                const quantity = params.value as number;
+                let color = 'black';
+                if (quantity < 5) {
+                    color = 'red';
+                } else if (quantity < 15) {
+                    color = '#F6BE00';
+                }
+                return (
+                    <div style={{ color: color}}>
+                        {quantity}
+                    </div>
+                );
+            }
+        },
+        {field: 'allocatedQuantity', headerName: "Zaalokowana ilość", flex: 4, headerClassName: 'header-cell',},
+        {field: 'notAllocatedQuantity', headerName: "Niezaalokowana ilość", flex: 3, headerClassName: 'header-cell'},
+
     ];
 
     function deleteStock(id :number, name: string) {
@@ -71,7 +126,7 @@ const StocksPanel = () => {
                     console.log(response)
                     if (response?.data.success) {
                         setResult("Stock został usunięty!")
-                        loadStocks()
+                        reloadData()
                     } else {
                         setResult("Błąd podczas usuwania, sprawdź czy nie istnieją obiekty powiązane z tym stockiem.")
                     }
@@ -82,18 +137,23 @@ const StocksPanel = () => {
     }
     return (
         <Grid container justifyContent="center" alignItems="center">
-            <Grid container sx={{width: "65%", backgroundColor:"#E8E8E8", padding: "30px", borderRadius: 5}}>
+            <Grid container sx={{width: "95%", backgroundColor:"#E8E8E8", padding: "30px", borderRadius: 5}}>
                 <ContainedButton label="Dodaj stock" onClick={()=>{setOpenModal(true)}}></ContainedButton>
                 <Grid container>
-                    <Grid item xs={12} sx={{padding: "5px", height: "70vh", fontSize:"25px"}}>
+                    <Grid item xs={6} sx={{padding: "5px", height: "60vh", fontSize:"25px"}}>
                         <Grid container>
                             Stock:{result}
                         </Grid>
                         <CustomTable rows={stocks} columns={columns}/>
-
+                    </Grid>
+                    <Grid item xs={6} sx={{padding: "5px", height: "60vh", fontSize:"25px"}}>
+                        <Grid container>
+                            Pogrupowany Stock:
+                        </Grid>
+                        <CustomTable rows={compressedStocks} columns={columnsCompressedStocks}/>
                     </Grid>
                 </Grid>
-                <AddStockModal reloadData={loadStocks} show={openModal} handleClose={()=>{setOpenModal(!openModal)}}/>
+                <AddStockModal reloadData={reloadData} show={openModal} handleClose={()=>{setOpenModal(!openModal)}}/>
             </Grid>
 
         </Grid>
