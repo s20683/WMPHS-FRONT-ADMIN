@@ -60,6 +60,19 @@ const OrderPanel = () => {
             })
             .catch(error => console.error('Error fetching carriers:', error));
     }
+    function releaseOrderToCompletation(id: number){
+        axios.post(`/gui2wmphs/releaseOrder/${id}`)
+            .then(response =>{
+                console.log(response)
+                if (!response?.data.success)
+                    setResult(response.data.errorMessage)
+                else {
+                    setResult("Uwolniono zlecenie " + id + "!")
+                    loadOrders()
+                }
+            })
+            .catch(error => console.error('Error while releasing order:', error));
+    }
     function loadLines(){
         if (selectedCarrier === -1)
             return;
@@ -198,15 +211,42 @@ const OrderPanel = () => {
     const orderColumns : GridColDef[] = [
         {field: 'id', headerName: "Id", flex: 2, headerClassName: 'header-cell'},
         {field: 'carrierVolume', headerName: "Pojemność", flex: 4, headerClassName: 'header-cell'},
-        {field: 'state', headerName: "Status", flex: 4, headerClassName: 'header-cell'},
+        { field: 'state', headerName: "Status", flex: 4, headerClassName: 'header-cell',
+            renderCell: (params: GridCellParams) => {
+                const stateMapping: { [key: number]: string } = {
+                    0: "Stworzone",
+                    1: "Uwolnione",
+                    2: "W kompletacji",
+                    3: "Skompletowane",
+                    4: "Rozsortowane"
+                };
+                return stateMapping[params.value as number] || "Unknown";
+            }
+        },
         {field: 'destinationName', headerName: "Destynacja", flex: 4, headerClassName: 'header-cell'},
         {field: 'userName', headerName: "Użytkownik", flex: 4, headerClassName: 'header-cell'},
+        {field: 'release', headerName: "Uwolnij", flex: 3, headerClassName: 'header-cell',
+            renderCell: (params: GridCellParams) => {
+                const id = params.row.id as number;
+                const state = params.row.state as number;
+                return (
+                    <ContainedButton sx={{fontSize: "15px"}} label="Uwolnij"
+                                     disabled={state !== 0}
+                                     onClick={() => {
+                                         releaseOrderToCompletation(id)
+                                     }}
+                    />
+                )
+            }
+        },
         {field: 'empty', headerName: "Usuń", flex: 2, headerClassName: 'header-cell',
             renderCell: (params: GridCellParams) => {
                 const id = params.row.id as number;
                 const name = params.row.name as string;
+                const state = params.row.state as number;
                 return (
                     <ContainedButton sx={{fontSize: "15px"}} label="Usuń"
+                                     disabled={state !== 0}
                                      onClick={() => {
                                          deleteOrder(id, name)
                                      }}
