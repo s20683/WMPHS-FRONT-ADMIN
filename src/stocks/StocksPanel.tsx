@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Grid} from "@mui/material";
+import {Grid} from "@mui/material";
 import ContainedButton from "../components/ContainedButton";
 import CustomTable from "../components/CustomTable";
-import AddProductModal from "../products/AddProductModal";
 import axios from "axios";
 import {GridCellParams, GridColDef} from "@mui/x-data-grid";
 import AddStockModal from "./AddStockModal";
 import Swal from "sweetalert2";
+import { differenceInDays, isBefore, parseISO } from 'date-fns';
+
 
 interface Stock {
     id: number;
@@ -62,13 +63,38 @@ const StocksPanel = () => {
         return () => clearInterval(intervalId);
     }, []);
 
+    const getDaysToExpiry = (expDate: string) => {
+        const today = new Date();
+        const expiryDate = parseISO(expDate);
+        return differenceInDays(expiryDate, today);
+    };
+
     const columns : GridColDef[] = [
         {field: 'id', headerName: "Id", flex: 2, headerClassName: 'header-cell'},
         {field: 'productName', headerName: "Produkt", flex: 4, headerClassName: 'header-cell',},
         {field: 'quantity', headerName: "Ilość", flex: 2, headerClassName: 'header-cell'},
         {field: 'allocatedQuantity', headerName: "Zaalokowana ilość", flex: 3, headerClassName: 'header-cell'},
         {field: 'notAllocatedQuantity', headerName: "Niezaalokowana ilość", flex: 3, headerClassName: 'header-cell'},
-        {field: 'expDate', headerName: "Data ważności", flex: 4, headerClassName: 'header-cell'},
+        {
+            field: 'expDate', headerName: "Data ważności", flex: 4, headerClassName: 'header-cell',
+            renderCell: (params: GridCellParams) => {
+                const expDate = params.value as string;
+                const daysToExpiry = getDaysToExpiry(expDate);
+
+                let color = 'black'; // Default color
+                if (daysToExpiry < 0) {
+                    color = 'red';
+                } else if (daysToExpiry <= 10) {
+                    color = 'orange';
+                }
+
+                return (
+                    <span style={{ color }}>
+                    {expDate}
+                </span>
+                );
+            }
+        },
         {field: 'empty', headerName: "Usuń", flex: 3, headerClassName: 'header-cell',
             renderCell: (params: GridCellParams) => {
                 const id = params.row.id as number;
@@ -140,13 +166,13 @@ const StocksPanel = () => {
             <Grid container sx={{width: "95%", backgroundColor:"#E8E8E8", padding: "30px", borderRadius: 5}}>
                 <ContainedButton label="Dodaj stock" onClick={()=>{setOpenModal(true)}}></ContainedButton>
                 <Grid container>
-                    <Grid item xs={6} sx={{padding: "5px", height: "60vh", fontSize:"25px"}}>
+                    <Grid item xs={6} sx={{padding: "5px", height: "60vh", fontSize:"15px"}}>
                         <Grid container>
                             Stock:{result}
                         </Grid>
                         <CustomTable rows={stocks} columns={columns}/>
                     </Grid>
-                    <Grid item xs={6} sx={{padding: "5px", height: "60vh", fontSize:"25px"}}>
+                    <Grid item xs={6} sx={{padding: "5px", height: "60vh", fontSize:"15px"}}>
                         <Grid container>
                             Pogrupowany Stock:
                         </Grid>

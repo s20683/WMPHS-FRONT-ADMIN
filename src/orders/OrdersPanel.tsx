@@ -130,8 +130,10 @@ const OrderPanel = () => {
             renderCell: (params: GridCellParams) => {
                 const id = params.row.id as number;
                 const name = params.row.barcode as string;
+                const selectedOrderObject = orders.find(order => order.id === selectedOrder);
                 return (
                     <ContainedButton sx={{fontSize: "15px"}} label="Usuń"
+                                     disabled={selectedOrderObject?.state !== 0}
                                      onClick={() => {
                                          deleteCarrier(id, name)
                                      }}
@@ -198,8 +200,10 @@ const OrderPanel = () => {
             renderCell: (params: GridCellParams) => {
                 const id = params.row.id as number;
                 const name = params.row.productName as string;
+                const selectedOrderObject = orders.find(order => order.id === selectedOrder);
                 return (
                     <ContainedButton sx={{fontSize: "15px"}} label="Usuń"
+                                     disabled={selectedOrderObject?.state !== 0}
                                      onClick={() => {
                                          deleteLine(id, name)
                                      }}
