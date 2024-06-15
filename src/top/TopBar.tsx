@@ -42,7 +42,7 @@ const TopBar = () => {
 
     return (
         <Toolbar variant="dense" sx={{ background: "#2d2d2d"}}>
-            <IconButton size="small" edge="start" color="primary" aria-label="logo" sx={{ marginRight: 3 }} href="/">
+            <IconButton size="small" edge="start" color="primary" aria-label="logo" sx={{ marginRight: 3 }} href="/admin">
                 <img src={logoWhite} width={180} />
             </IconButton>
             <Stack direction="row" flexGrow={1}>

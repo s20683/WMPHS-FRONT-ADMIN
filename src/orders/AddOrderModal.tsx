@@ -16,17 +16,9 @@ import {style} from "../products/AddProductModal";
 import axios from "axios";
 import {User} from "../users/UsersPanel";
 import {Destination} from "../destinations/DestinationsPanel";
-import {Line} from "./OrdersPanel";
-import {Product} from "../products/ProductsPanel";
 import CustomTable from "../components/CustomTable";
 import {GridCellParams, GridColDef} from "@mui/x-data-grid";
 import {CompressedStock} from "../stocks/StocksPanel";
-import Swal from "sweetalert2";
-
-interface ModalContent {
-    header: string;
-    body: React.ReactElement;
-}
 
 interface Props {
     show: boolean;

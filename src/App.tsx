@@ -21,12 +21,7 @@ function App() {
                   <Route path="/" element={
                       <MainLayout />
                   }>
-                      <Route index element={<Navigate to="/dashboard" />}/>
-                      <Route path="/dashboard/*" element={
-                          <Box paddingTop={5} mt={pageMargin} paddingLeft={3} paddingRight={3}>
-                              {/*<Dashboard />*/}
-                          </Box>
-                      } />
+                      <Route index element={<Navigate to="/orders" />}/>
                       <Route>
                           <Route path="/orders" element={
                               <Box paddingTop={2} mt={pageMargin} paddingLeft={5} paddingRight={5}>

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Grid} from "@mui/material";
 import ContainedButton from "../components/ContainedButton";
 import CustomTable from "../components/CustomTable";
-import AddDestinationModal from "../destinations/AddDestinationModal";
 import axios from "axios";
 import {GridCellParams, GridColDef} from "@mui/x-data-grid";
 import Swal from "sweetalert2";

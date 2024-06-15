@@ -6,7 +6,7 @@ import axios from "axios";
 import {GridCellParams, GridColDef} from "@mui/x-data-grid";
 import AddStockModal from "./AddStockModal";
 import Swal from "sweetalert2";
-import { differenceInDays, isBefore, parseISO } from 'date-fns';
+import { differenceInDays, parseISO } from 'date-fns';
 
 
 interface Stock {
