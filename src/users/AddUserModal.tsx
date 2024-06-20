@@ -62,7 +62,7 @@ const AddUserModal = ({show, handleClose, reloadData} : Props) => {
             <Box sx={{ ...style, width: 280 }}>
                 <Grid direction="column">
                     <Grid item sx={{fontSize: "25px"}}>
-                        Dodaj Destynację
+                        Dodaj Użytkownika
                     </Grid>
                     <Grid item sx={{ marginTop: "15px"}}>
                         <TextField
